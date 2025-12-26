@@ -1,8 +1,12 @@
-def suma():
-    a = 5
-    b = 10
-    return a + b
+from suma import sumar
 
-resultado = suma()
-print("El resultado de la suma es:", resultado)
-# This function adds two numbers and returns the result.
+def lambda_handler(event, context):
+    a = event.get("a", 0)
+    b = event.get("b", 0)
+
+    resultado = sumar(a, b)
+
+    return {
+        "statusCode": 200,
+        "result": resultado
+    }
