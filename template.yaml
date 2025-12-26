@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: '2025-12-26'
+Transform: AWS::Serverless-2025-12-26
+Description: Lambda suma con CI/CD usando SAM
+
+Resources:
+  SumaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: suma-lambda-cicd
+      Runtime: python3.12
+      Handler: app.lambda_handler
+      CodeUri: .
+      MemorySize: 128
+      Timeout: 5
+      Policies:
+        - AWSLambdaBasicExecutionRole
