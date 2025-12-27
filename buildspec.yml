@@ -7,5 +7,5 @@ phases:
 
   build:
     commands:
-      - echo "Running Python build"
+      - echo "Running Python build vs 2"
       - python app.py
