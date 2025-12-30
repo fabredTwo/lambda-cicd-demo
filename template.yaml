@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2025-09-09
-Description: Lambda suma con CI/CD usando SAM 
+Description: Lambda suma con CI/CD usando SAM v2
 
 Resources:
   SumaFunction:
