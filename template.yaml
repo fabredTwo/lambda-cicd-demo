@@ -1,13 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: AWS::Serverless-2016-10-31
-Description: Lambda CI/CD_Demo_
+Description: Pipeline test OK
 
 Resources:
-  MyFunction:
-    Type: AWS::Serverless::Function
+  TestLogGroup:
+    Type: AWS::Logs::LogGroup
     Properties:
-      Runtime: python3.11
-      Handler: app.lambda_handler
-      InlineCode: |
-        def lambda_handler(event, context):
-            return "ok"
+      LogGroupName: /aws/test/pipeline
+      RetentionInDays: 7
