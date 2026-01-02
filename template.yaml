@@ -1,9 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Pipeline sanity check
+Description: Pipeline bootstrap OK
 
 Resources:
-  TestLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: /aws/pipeline/sanity
-      RetentionInDays: 7
+  TestBucket:
+    Type: AWS::S3::Bucket
