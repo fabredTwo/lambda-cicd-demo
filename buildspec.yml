@@ -1,6 +1,18 @@
 version: 0.2
 
 phases:
+  install:
+    commands:
+      - echo "Instalando dependencias (si existen)"
+
   build:
     commands:
-      - echo "BUILD OK"
+      - echo "Empaquetando Lambda"
+      - zip -r function.zip app.py suma.py
+
+  post_build:
+    commands:
+      - echo "Desplegando a Lambda"
+      - aws lambda update-function-code \
+          --function-name suma-cicd \
+          --zip-file fileb://function.zip

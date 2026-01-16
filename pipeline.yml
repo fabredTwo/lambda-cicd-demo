@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Pipeline GitHub v2 + CodeBuild (estable, sin errores S3)
+
+Resources:
+
+  # =========================
+  # 1. PROYECTO CODEBUILD
+  # =========================
+  BuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: build-github-v2
+      ServiceRole: arn:aws:iam::997141224904:role/Rolsupremo
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:4.0
+      Source:
+        Type: CODEPIPELINE
+
+  # =========================
+  # 2. PIPELINE
+  # =========================
+  CICDPipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: pipeline-github-v2
+      RoleArn: arn:aws:iam::997141224904:role/Rolsupremo
+
+      ArtifactStore:
+        Type: S3
+        Location: supremobucket   # 👈 TU BUCKET EXISTENTE
+
+      Stages:
+
+        # ---------- SOURCE ----------
+        - Name: Source
+          Actions:
+            - Name: GitHub_Source
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: CodeStarSourceConnection
+                Version: '1'
+              OutputArtifacts:
+                - Name: SourceOutput
+              Configuration:
+                ConnectionArn: arn:aws:codeconnections:us-east-1:997141224904:connection/aa0ec8ff-ba00-4f5c-b668-ba111e0f96b4
+                FullRepositoryId: fabredTwo/lambda-cicd-demo
+                BranchName: main
+
+        # ---------- BUILD ----------
+        - Name: Build
+          Actions:
+            - Name: Build_Action
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: '1'
+              InputArtifacts:
+                - Name: SourceOutput
+              OutputArtifacts:
+                - Name: BuildOutput
+              Configuration:
+                ProjectName: !Ref BuildProject

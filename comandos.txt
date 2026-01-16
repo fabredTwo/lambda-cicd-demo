@@ -1,0 +1,16 @@
+aws cloudformation create-stack --stack-name MiPipelineFinal --template-body file://pipeline.yml --capabilities CAPABILITY_IAM
+aws configure set region us-east-1
+aws cloudformation create-stack --stack-name MiPipelineFinal --template-body file://pipeline.yml --capabilities CAPABILITY_IAM
+
+aws cloudformation describe-stacks --stack-name MiPipelineFinal --query "Stacks[0].StackStatus" --output text
+
+aws cloudformation describe-stack-events --stack-name MiPipelineFinal --query "StackEvents[?ResourceStatus=='CREATE_FAILED'].{Resource:LogicalResourceId, Reason:ResourceStatusReason}" --output table
+
+borrar pipelines:
+aws cloudformation delete-stack --stack-name MiPipelineFinalBasecuatro
+
+crearcion de nuevo_
+aws cloudformation create-stack --stack-name MiPipelineFinalBasecuatro --template-body file://pipeline.yml --capabilities CAPABILITY_IAM
+
+chequeo_
+aws codepipeline list-pipelines --query "pipelines[?name=='MiPipelineFinal']"
