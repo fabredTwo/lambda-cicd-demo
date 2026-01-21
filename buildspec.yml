@@ -1,6 +1,6 @@
 post_build:
-  commands:
-   echo "Verificando si veo la Lambda..."
-   aws lambda get-function --function-name suma-cicd --region us-east-1
-   echo "Si lo anterior paso, actualizando..."
-   aws lambda update-function-code --function-name suma-cicd --s3-bucket cicd-bucket-uno --s3-key function.zip --region us-east-1
+ commands:
+  echo "Verificando si veo la Lambda..."
+  aws lambda get-function --function-name suma-cicd --region us-east-1
+  echo "Si lo anterior paso, actualizando..."
+  aws lambda update-function-code --function-name suma-cicd --s3-bucket cicd-bucket-uno --s3-key function.zip --region us-east-1
