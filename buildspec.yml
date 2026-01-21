@@ -1,7 +1,13 @@
-build:
+version: 0.2
+
+phases:
+  build:
     commands:
       - echo "Zippeando..."
       - zip -r function.zip app.py suma.py
-      - echo "Subiendo a MI bucket manual..."
-      # USA TU BUCKET MANUAL AQUÍ
+      - echo "Subiendo a mi bucket manual..."
       - aws s3 cp function.zip s3://cicd-bucket-uno/function.zip
+  post_build:
+    commands:
+      - echo "Actualizando Lambda..."
+      - aws lambda update-function-code --function-name suma-cicd --s3-bucket cicd-bucket-uno --s3-key function.zip --region us-east-1
