@@ -1,12 +1,14 @@
 version: 0.2
-
 phases:
   build:
     commands:
-      - echo "Empaquetando Lambda"
+      - echo "Empaquetando..."
       - zip -r function.zip app.py suma.py
+      # Paso 1: Subir el zip al bucket que ya tienes (usa el nombre del hp bucket ese)
+      - aws s3 cp function.zip s3://codepipeline-us-east-2-d79c1b179efc-4e5d-807e-0a3cfcb9060e/function.zip
 
   post_build:
     commands:
-      - echo "Desplegando Lambda"
-      - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://function.zip
+      - echo "Actualizando Lambda desde S3..."
+      # Paso 2: Decirle a Lambda que se actualice usando el archivo del bucket
+      - aws lambda update-function-code --function-name suma-cicd --s3-bucket codepipeline-us-east-2-d79c1b179efc-4e5d-807e-0a3cfcb9060e --s3-key function.zip --region us-east-2
