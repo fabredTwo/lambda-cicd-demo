@@ -6,28 +6,35 @@ env:
     AWS_DEFAULT_REGION: "us-east-1"
 
 phases:
-  install:
-    runtime-versions:
-      python: 3.12
-    commands:
-      - echo "=== INSTALL ==="
-      - aws --version
-      - aws sts get-caller-identity
-
   build:
     commands:
-      - echo "=== BUILD ==="
+      - echo "=== DEBUG: WHOAMI / REGION ==="
+      - aws --version
+      - aws sts get-caller-identity
+      - echo "REGION=$AWS_DEFAULT_REGION"
+
+      - echo "=== DEBUG: WORKDIR ==="
       - pwd
       - ls -la
+
+      - echo "=== DEBUG: BUILD ZIP ==="
       - rm -f function.zip
       - zip -r function.zip app.py suma.py
-      - echo "ZIP CONTENT:"
+
+      - echo "=== DEBUG: ZIP CONTENT ==="
       - unzip -l function.zip
-      - echo "=== DEPLOY ==="
+
+      - echo "=== DEBUG: ZIP HASH (to compare) ==="
+      - sha256sum function.zip || shasum -a 256 function.zip || certutil -hashfile function.zip SHA256
+
+      - echo "=== DEBUG: DEPLOY ZIP TO LAMBDA ==="
       - aws lambda update-function-code --function-name "$FUNCTION_NAME" --zip-file fileb://function.zip
-      - echo "=== INVOKE ==="
+
+      - echo "=== DEBUG: GET LAMBDA CONFIG AFTER DEPLOY ==="
+      - aws lambda get-function-configuration --function-name "$FUNCTION_NAME" --query '{Runtime:Runtime,Handler:Handler,LastModified:LastModified,Version:Version}'
+
+      - echo "=== DEBUG: INVOKE ==="
       - aws lambda invoke --function-name "$FUNCTION_NAME" --payload "{}" response.json
-      - echo "=== RESPONSE ==="
       - cat response.json
 
 artifacts:
