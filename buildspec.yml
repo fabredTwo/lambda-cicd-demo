@@ -3,20 +3,31 @@ version: 0.2
 env:
   variables:
     FUNCTION_NAME: "suma-cicd"
+    AWS_DEFAULT_REGION: "us-east-1"
 
 phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - echo "=== INSTALL ==="
+      - aws --version
+      - aws sts get-caller-identity
+
   build:
     commands:
-      - echo "Zipping..."
+      - echo "=== BUILD ==="
+      - pwd
+      - ls -la
       - rm -f function.zip
       - zip -r function.zip app.py suma.py
+      - echo "ZIP CONTENT:"
       - unzip -l function.zip
-
-      - echo "Deploying to Lambda..."
+      - echo "=== DEPLOY ==="
       - aws lambda update-function-code --function-name "$FUNCTION_NAME" --zip-file fileb://function.zip
-
-      - echo "Smoke test..."
+      - echo "=== INVOKE ==="
       - aws lambda invoke --function-name "$FUNCTION_NAME" --payload "{}" response.json
+      - echo "=== RESPONSE ==="
       - cat response.json
 
 artifacts:
