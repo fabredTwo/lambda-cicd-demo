@@ -24,14 +24,14 @@ phases:
       - echo "=== DEBUG: ZIP CONTENT ==="
       - unzip -l function.zip
 
-      - echo "=== DEBUG: ZIP HASH (to compare) ==="
-      - sha256sum function.zip || shasum -a 256 function.zip || certutil -hashfile function.zip SHA256
+      - echo "=== DEBUG: ZIP HASH ==="
+      - sha256sum function.zip || shasum -a 256 function.zip
 
       - echo "=== DEBUG: DEPLOY ZIP TO LAMBDA ==="
       - aws lambda update-function-code --function-name "$FUNCTION_NAME" --zip-file fileb://function.zip
 
       - echo "=== DEBUG: GET LAMBDA CONFIG AFTER DEPLOY ==="
-      - aws lambda get-function-configuration --function-name "$FUNCTION_NAME" --query '{Runtime:Runtime,Handler:Handler,LastModified:LastModified,Version:Version}'
+      - aws lambda get-function-configuration --function-name "$FUNCTION_NAME"
 
       - echo "=== DEBUG: INVOKE ==="
       - aws lambda invoke --function-name "$FUNCTION_NAME" --payload "{}" response.json
