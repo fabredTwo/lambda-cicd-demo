@@ -3,10 +3,13 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "Empaquetando Lambda"
-      - zip -r function.zip app.py suma.py
+      - echo "Empaquetando Lambda..."
+      - chmod 644 app.py suma.py
+      - zip -j function.zip app.py suma.py
+      # Opcional: puedes dejar el cp si quieres tener un respaldo en la raíz del bucket
+      - aws s3 cp function.zip s3://codepipeline-us-east-1-94b9e8af3fc6-4373-a4af-aaae49411ad3/function.zip
 
-  post_build:
-    commands:
-      - echo "Desplegando Lambda"
-      - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://function.zip
+artifacts:
+  files:
+    - function.zip
+  proxy-artifact: yes
