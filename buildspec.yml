@@ -3,5 +3,10 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "OK - buildspec parsed"
-      - ls -la
+      - echo "Building function.zip"
+      - zip -r function.zip app.py suma.py
+      - unzip -l function.zip
+
+artifacts:
+  files:
+    - function.zip
