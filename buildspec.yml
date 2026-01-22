@@ -4,9 +4,11 @@ phases:
   build:
     commands:
       - echo "Empaquetando Lambda"
+      - chmod 644 app.py suma.py
       - zip -r function.zip app.py suma.py
 
   post_build:
     commands:
       - echo "Desplegando Lambda"
-      - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://function.zip
+       # - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://function.zip
+      - aws s3 cp function.zip s3://codepipeline-us-east-1-94b9e8af3fc6-4373-a4af-aaae49411ad3/function.zip
