@@ -1,12 +1,25 @@
 version: 0.2
 
+env:
+  variables:
+    FUNCTION_NAME: "suma-cicd"
+
 phases:
   build:
     commands:
-      - echo "Building function.zip"
+      - echo "Zipping..."
+      - rm -f function.zip
       - zip -r function.zip app.py suma.py
       - unzip -l function.zip
+
+      - echo "Deploying to Lambda..."
+      - aws lambda update-function-code --function-name "$FUNCTION_NAME" --zip-file fileb://function.zip
+
+      - echo "Smoke test..."
+      - aws lambda invoke --function-name "$FUNCTION_NAME" --payload "{}" response.json
+      - cat response.json
 
 artifacts:
   files:
     - function.zip
+    - response.json
