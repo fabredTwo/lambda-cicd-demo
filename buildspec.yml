@@ -6,7 +6,7 @@ phases:
       - echo "Empaquetando Lambda..."
       - zip -r function.zip app.py suma.py
       # Opcional: puedes dejar el cp si quieres tener un respaldo en la raíz del bucket
-      - aws s3 cp function.zip s3://bucket-cicd-base/function.zip
+      - aws s3 cp function.zip s3://codepipeline-us-east-1-94b9e8af3fc6-4373-a4af-aaae49411ad3/function.zip
 
 artifacts:
   files:
