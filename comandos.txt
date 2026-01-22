@@ -14,3 +14,8 @@ aws cloudformation create-stack --stack-name MiPipelineFinalBasecuatro --templat
 
 chequeo_
 aws codepipeline list-pipelines --query "pipelines[?name=='MiPipelineFinal']"
+
+
+ aws lambda update-function-configuration --function-name suma-cicd --handler app.lambda_handler
+  aws lambda update-function-code --function-name suma-cicd --zip-file fileb://function.zip
+  aws lambda invoke --function-name suma-cicd --payload "{}" response.json

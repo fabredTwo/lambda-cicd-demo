@@ -1,43 +1,9 @@
 version: 0.2
 
-env:
-  variables:
-    FUNCTION_NAME: "suma-cicd"
-    AWS_DEFAULT_REGION: "us-east-1"
-
 phases:
   build:
     commands:
-      - echo "=== DEBUG: WHOAMI / REGION ==="
-      - aws --version
-      - aws sts get-caller-identity
-      - echo "REGION=$AWS_DEFAULT_REGION"
-
-      - echo "=== DEBUG: WORKDIR ==="
-      - pwd
-      - ls -la
-
-      - echo "=== DEBUG: BUILD ZIP ==="
-      - rm -f function.zip
-      - zip -r function.zip app.py suma.py
-
-      - echo "=== DEBUG: ZIP CONTENT ==="
-      - unzip -l function.zip
-
-      - echo "=== DEBUG: ZIP HASH ==="
-      - sha256sum function.zip || shasum -a 256 function.zip
-
-      - echo "=== DEBUG: DEPLOY ZIP TO LAMBDA ==="
-      - aws lambda update-function-code --function-name "$FUNCTION_NAME" --zip-file fileb://function.zip
-
-      - echo "=== DEBUG: GET LAMBDA CONFIG AFTER DEPLOY ==="
-      - aws lambda get-function-configuration --function-name "$FUNCTION_NAME"
-
-      - echo "=== DEBUG: INVOKE ==="
-      - aws lambda invoke --function-name "$FUNCTION_NAME" --payload "{}" response.json
-      - cat response.json
-
-artifacts:
-  files:
-    - function.zip
-    - response.json
+      - echo "Empaquetando Lambda..."
+      - chmod 644 app.py suma.py
+      - aws s3 cp suma.py s3://codepipeline-us-east-1-94b9e8af3fc6-4373-a4af-aaae49411ad3/suma.py
+      - aws s3 cp app.py s3://codepipeline-us-east-1-94b9e8af3fc6-4373-a4af-aaae49411ad3/app.py
