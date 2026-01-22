@@ -5,5 +5,4 @@ phases:
     commands:
       - echo "Empaquetando Lambda..."
       - chmod 644 app.py suma.py
-      - aws s3 cp suma.py s3://codepipeline-us-east-1-94b9e8af3fc6-4373-a4af-aaae49411ad3/suma.py
-      - aws s3 cp app.py s3://codepipeline-us-east-1-94b9e8af3fc6-4373-a4af-aaae49411ad3/app.py
+      - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://function.zip
