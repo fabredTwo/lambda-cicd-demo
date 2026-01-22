@@ -1,14 +1,43 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - echo "=== INSTALL PHASE ==="
+      - python --version
+      - pwd
+      - ls -la
+
+  pre_build:
+    commands:
+      - echo "=== PRE_BUILD PHASE ==="
+      - echo "Checking required files..."
+      - test -f app.py || (echo "ERROR: app.py NOT FOUND in repo root" && exit 1)
+      - test -f suma.py || (echo "ERROR: suma.py NOT FOUND in repo root" && exit 1)
+
   build:
     commands:
-      - echo "Empaquetando Lambda"
-      - chmod 644 app.py suma.py
+      - echo "=== BUILD PHASE ==="
+      - echo "Cleaning previous zip..."
+      - rm -f function.zip
+
+      - echo "Creating function.zip (ROOT files only)..."
       - zip -r function.zip app.py suma.py
+
+      - echo "ZIP CONTENT:"
+      - unzip -l function.zip
+
+      - echo "Validating that app.py is in ZIP ROOT..."
+      - unzip -l function.zip | grep -E " app\.py$" > /dev/null || (echo "ERROR: app.py is NOT in ZIP ROOT" && exit 1)
 
   post_build:
     commands:
-      - echo "Desplegando Lambda"
-       # - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://function.zip
-      - aws s3 cp function.zip s3://codepipeline-us-east-1-94b9e8af3fc6-4373-a4af-aaae49411ad3/function.zip
+      - echo "=== POST_BUILD PHASE ==="
+      - echo "Build completed successfully."
+      - ls -la
+
+artifacts:
+  files:
+    - function.zip
