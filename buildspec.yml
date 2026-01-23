@@ -3,37 +3,5 @@ version: 0.2
 phases:
   build:
     commands:
-      - 'echo "=== START BUILD ==="'
-
-      - 'echo "=== CLEAN OLD ARTIFACTS ==="'
-      - 'rm -f chichicux.zip function.zip response.json event.json lambda_actual.zip || true'
-
-      - 'echo "=== LIST ROOT ==="'
+      - 'echo "HELLO-SANDRO"'
       - 'ls -lah'
-
-      - 'echo "=== LIST function/ ==="'
-      - 'ls -lah function'
-
-      - 'echo "=== PACKAGE ZIP from function/ ==="'
-      - 'cd function'
-      - 'zip -r ../chichicux.zip .'
-      - 'cd ..'
-
-      - 'echo "=== ZIP CONTENT ==="'
-      - 'unzip -l chichicux.zip'
-
-      - 'echo "=== CHECK: function.zip must NOT be inside ==="'
-      - 'unzip -l chichicux.zip | grep -q "function.zip" && echo "ERROR: nested function.zip found" && exit 1 || echo "OK: no nested zip"'
-
-      - 'echo "=== CHECK: app.py must exist ==="'
-      - 'unzip -l chichicux.zip | grep -q " app.py" && echo "OK: app.py found" || echo "ERROR: app.py missing"'
-      - 'unzip -l chichicux.zip | grep -q " app.py" || exit 1'
-
-      - 'echo "=== CHECK: suma.py must exist ==="'
-      - 'unzip -l chichicux.zip | grep -q " suma.py" && echo "OK: suma.py found" || echo "ERROR: suma.py missing"'
-      - 'unzip -l chichicux.zip | grep -q " suma.py" || exit 1'
-
-      - 'echo "=== DEPLOY TO LAMBDA ==="'
-      - 'aws lambda update-function-code --function-name suma-cicd --zip-file fileb://chichicux.zip'
-
-      - 'echo "=== DONE ==="'
