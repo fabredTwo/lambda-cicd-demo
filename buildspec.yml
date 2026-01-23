@@ -3,25 +3,28 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "Limpiando artefactos antiguos..."
+      - echo "Limpiando artifacts locales..."
       - rm -f chichicux.zip function.zip response.json event.json lambda_actual.zip
 
-      - echo "Contenido del repo:"
+      - echo "Listando repo..."
       - ls -lah
 
-      - echo "Empaquetando desde function/..."
+      - echo "Listando carpeta function..."
+      - ls -lah function
+
+      - echo "Empaquetando desde function/ con app.py en root..."
       - cd function
       - zip -r ../chichicux.zip .
       - cd ..
 
-      - echo "Contenido del ZIP FINAL:"
+      - echo "Contenido del zip:"
       - unzip -l chichicux.zip
 
-      - echo "Validando que exista app.py en ROOT del zip..."
-      - unzip -l chichicux.zip | grep -qE '(^| )app.py$' || (echo "ERROR: app.py NO está en root del zip" && exit 1)
+      - echo "Verificando que NO exista function.zip dentro..."
+      - if unzip -l chichicux.zip | grep -q "function.zip"; then echo "ERROR: function.zip esta dentro del zip"; exit 1; fi
 
-      - echo "Validando que NO exista function.zip dentro..."
-      - unzip -l chichicux.zip | grep -q "function.zip" && (echo "ERROR: function.zip está dentro del paquete" && exit 1) || true
+      - echo "Verificando que SI exista app.py en root..."
+      - if ! unzip -l chichicux.zip | grep -q " app.py"; then echo "ERROR: app.py no esta en el zip"; exit 1; fi
 
-      - echo "Deploy..."
+      - echo "Deploy a Lambda..."
       - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://chichicux.zip
