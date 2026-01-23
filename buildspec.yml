@@ -3,15 +3,25 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "Empaquetando Lambda desde function/ pero dejando app.py en root del zip..."
-      - rm -f chichicux.zip
+      - echo "Limpiando artefactos antiguos..."
+      - rm -f chichicux.zip function.zip response.json event.json lambda_actual.zip
 
+      - echo "Contenido del repo:"
+      - ls -lah
+
+      - echo "Empaquetando desde function/..."
       - cd function
       - zip -r ../chichicux.zip .
       - cd ..
 
-      - echo "Contenido del zip:"
+      - echo "Contenido del ZIP FINAL:"
       - unzip -l chichicux.zip
+
+      - echo "Validando que exista app.py en ROOT del zip..."
+      - unzip -l chichicux.zip | grep -qE '(^| )app.py$' || (echo "ERROR: app.py NO está en root del zip" && exit 1)
+
+      - echo "Validando que NO exista function.zip dentro..."
+      - unzip -l chichicux.zip | grep -q "function.zip" && (echo "ERROR: function.zip está dentro del paquete" && exit 1) || true
 
       - echo "Deploy..."
       - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://chichicux.zip
