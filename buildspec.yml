@@ -4,4 +4,4 @@ phases:
   build:
     commands:
       - echo "Empaquetando Lambda..."
-      - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://function.zip
+      - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://toma.zip
