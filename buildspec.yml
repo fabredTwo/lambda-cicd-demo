@@ -3,28 +3,31 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "Limpiando artifacts locales..."
-      - rm -f chichicux.zip function.zip response.json event.json lambda_actual.zip
+      - echo "START BUILD"
+      - rm -f chichicux.zip function.zip response.json event.json lambda_actual.zip || true
 
-      - echo "Listando repo..."
+      - echo "PWD:"
+      - pwd
+
+      - echo "LIST ROOT:"
       - ls -lah
 
-      - echo "Listando carpeta function..."
+      - echo "LIST function:"
       - ls -lah function
 
-      - echo "Empaquetando desde function/ con app.py en root..."
+      - echo "ZIP from function folder"
       - cd function
       - zip -r ../chichicux.zip .
       - cd ..
 
-      - echo "Contenido del zip:"
+      - echo "ZIP CONTENT"
       - unzip -l chichicux.zip
 
-      - echo "Verificando que NO exista function.zip dentro..."
-      - if unzip -l chichicux.zip | grep -q "function.zip"; then echo "ERROR: function.zip esta dentro del zip"; exit 1; fi
+      - echo "CHECK: function.zip must NOT be inside"
+      - unzip -l chichicux.zip | grep -q "function.zip" && echo "ERROR function.zip nested" && exit 1 || echo "OK no nested zip"
 
-      - echo "Verificando que SI exista app.py en root..."
-      - if ! unzip -l chichicux.zip | grep -q " app.py"; then echo "ERROR: app.py no esta en el zip"; exit 1; fi
+      - echo "CHECK: app.py MUST be present"
+      - unzip -l chichicux.zip | grep -q " app.py" && echo "OK app.py found" || (echo "ERROR app.py missing" && exit 1)
 
-      - echo "Deploy a Lambda..."
+      - echo "DEPLOY"
       - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://chichicux.zip
