@@ -3,33 +3,37 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "START BUILD"
+      - echo "=== START BUILD ==="
+
+      - echo "=== CLEAN OLD ARTIFACTS ==="
       - rm -f chichicux.zip function.zip response.json event.json lambda_actual.zip || true
 
-      - echo "PWD:"
-      - pwd
-
-      - echo "LIST ROOT:"
+      - echo "=== LIST ROOT ==="
       - ls -lah
 
-      - echo "LIST function:"
+      - echo "=== LIST function/ ==="
       - ls -lah function
 
-      - echo "ZIP from function folder"
+      - echo "=== PACKAGE ZIP from function/ (root files only) ==="
       - cd function
       - zip -r ../chichicux.zip .
       - cd ..
 
-      - echo "ZIP CONTENT"
+      - echo "=== ZIP CONTENT ==="
       - unzip -l chichicux.zip
 
-      - echo "CHECK nested function.zip"
-      - unzip -l chichicux.zip | grep -q "function.zip"
-      - if [ $? -eq 0 ]; then echo "ERROR function.zip nested"; exit 1; fi
+      - echo "=== CHECK: function.zip must NOT be inside ==="
+      - unzip -l chichicux.zip | grep -q "function.zip" && echo "ERROR: nested function.zip found" && exit 1 || echo "OK: no nested zip"
 
-      - echo "CHECK app.py exists"
-      - unzip -l chichicux.zip | grep -q " app.py"
-      - if [ $? -ne 0 ]; then echo "ERROR app.py missing"; exit 1; fi
+      - echo "=== CHECK: app.py must exist ==="
+      - unzip -l chichicux.zip | grep -q " app.py" && echo "OK: app.py found" || echo "ERROR: app.py missing"
+      - unzip -l chichicux.zip | grep -q " app.py" || exit 1
 
-      - echo "DEPLOY"
+      - echo "=== CHECK: suma.py must exist ==="
+      - unzip -l chichicux.zip | grep -q " suma.py" && echo "OK: suma.py found" || echo "ERROR: suma.py missing"
+      - unzip -l chichicux.zip | grep -q " suma.py" || exit 1
+
+      - echo "=== DEPLOY TO LAMBDA ==="
       - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://chichicux.zip
+
+      - echo "=== DONE ==="
