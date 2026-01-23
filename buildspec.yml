@@ -3,7 +3,7 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "=== START BUILD ==="
+      - echo "=== START BUILD =="
 
       - echo "=== CLEAN OLD ARTIFACTS ==="
       - rm -f chichicux.zip function.zip response.json event.json lambda_actual.zip || true
