@@ -1,0 +1,4 @@
+*.zip
+lambda_deployed/
+response.json
+event.json
