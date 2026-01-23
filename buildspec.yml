@@ -3,16 +3,17 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "Mostrando archivos del proyecto..."
+      - echo "Empaquetando Lambda desde function/..."
       - ls -lah
       - ls -lah function
 
-      - echo "Empaquetando Lambda (carpeta function/)..."
       - rm -f chichicux.zip
-      - zip -r chichicux.zip function
+      - cd function
+      - zip -r ../chichicux.zip .
+      - cd ..
 
-      - echo "Validando contenido del zip..."
+      - echo "Contenido del zip:"
       - unzip -l chichicux.zip
 
-      - echo "Deploy a Lambda..."
+      - echo "Deploy..."
       - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://chichicux.zip
