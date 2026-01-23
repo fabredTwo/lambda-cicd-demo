@@ -3,11 +3,15 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "Empaquetando Lambda root..."
-      - rm -f root.zip
+      - echo "Empaquetando Lambda desde function/ pero dejando app.py en root del zip..."
+      - rm -f chichicux.zip
+
       - cd function
-      - zip -r ../root.zip .
+      - zip -r ../chichicux.zip .
       - cd ..
 
-      - unzip -l root.zip
-      - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://root.zip
+      - echo "Contenido del zip:"
+      - unzip -l chichicux.zip
+
+      - echo "Deploy..."
+      - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://chichicux.zip
