@@ -1,4 +1,9 @@
 *.zip
 response.json
 event.json
+lambda_actual.zip*.zip
+response.json
+event.json
 lambda_actual.zip
+lambda_deployed.zip
+
