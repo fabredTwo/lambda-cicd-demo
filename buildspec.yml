@@ -23,11 +23,13 @@ phases:
       - echo "ZIP CONTENT"
       - unzip -l chichicux.zip
 
-      - echo "CHECK: function.zip must NOT be inside"
-      - unzip -l chichicux.zip | grep -q "function.zip" && echo "ERROR function.zip nested" && exit 1 || echo "OK no nested zip"
+      - echo "CHECK nested function.zip"
+      - unzip -l chichicux.zip | grep -q "function.zip"
+      - if [ $? -eq 0 ]; then echo "ERROR function.zip nested"; exit 1; fi
 
-      - echo "CHECK: app.py MUST be present"
-      - unzip -l chichicux.zip | grep -q " app.py" && echo "OK app.py found" || (echo "ERROR app.py missing" && exit 1)
+      - echo "CHECK app.py exists"
+      - unzip -l chichicux.zip | grep -q " app.py"
+      - if [ $? -ne 0 ]; then echo "ERROR app.py missing"; exit 1; fi
 
       - echo "DEPLOY"
       - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://chichicux.zip
