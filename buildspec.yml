@@ -4,8 +4,8 @@ phases:
   build:
     commands:
       - echo "PACKAGE app.py suma.py __init__.py"
-      - zip -j deploy.zip app.py suma.py __init__.py
+      - zip -j deploy_dos.zip app.py suma.py __init__.py
       - echo "ZIP CONTENT"
-      - unzip -l deploy.zip
+      - unzip -l deploy_dos.zip
       - echo "DEPLOY"
-      - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://deploy.zip
+      - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://deploy_dos.zip
