@@ -4,21 +4,15 @@ phases:
   build:
     commands:
       - echo "START BUILD"
-      - rm -rf dist deploy.zip || true
-      - mkdir dist
+      - rm -f deploy.zip || true
 
-      - echo "Copy lambda source files"
-      - cp src_lambda/app.py dist/app.py
-      - cp src_lambda/suma.py dist/suma.py
-      - cp src_lambda/__init__.py dist/__init__.py
-
-      - echo "Package deploy.zip from dist"
-      - cd dist
+      - echo "PACKAGE deploy folder"
+      - cd deploy
       - zip -r ../deploy.zip .
       - cd ..
 
       - echo "ZIP CONTENT"
       - unzip -l deploy.zip
 
-      - echo "Deploy to Lambda"
+      - echo "DEPLOY TO LAMBDA"
       - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://deploy.zip
