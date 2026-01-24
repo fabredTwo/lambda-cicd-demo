@@ -3,16 +3,9 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "START BUILD"
-      - rm -f deploy.zip || true
-
-      - echo "PACKAGE deploy folders"
-      - cd deploy
-      - zip -r ../deploy.zip .
-      - cd ..
-
+      - echo "PACKAGE app.py suma.py __init__.py"
+      - zip -j deploy.zip app.py suma.py __init__.py
       - echo "ZIP CONTENT"
       - unzip -l deploy.zip
-
-      - echo "DEPLOY TO LAMBDA"
+      - echo "DEPLOY"
       - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://deploy.zip
