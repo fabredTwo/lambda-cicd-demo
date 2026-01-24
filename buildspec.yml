@@ -4,30 +4,21 @@ phases:
   build:
     commands:
       - echo "START BUILD"
-      - rm -f chichicux.zip function.zip response.json event.json lambda_actual.zip || true
+      - rm -rf dist deploy.zip || true
+      - mkdir dist
 
-      - echo "LIST ROOT"
-      - ls -lah
+      - echo "Copy lambda source files"
+      - cp src_lambda/app.py dist/app.py
+      - cp src_lambda/suma.py dist/suma.py
+      - cp src_lambda/__init__.py dist/__init__.py
 
-      - echo "LIST FUNCTION DIR"
-      - ls -lah function
-
-      - echo "ZIP PACKAGE"
-      - cd function
-      - zip -r ../chichicux.zip .
+      - echo "Package deploy.zip from dist"
+      - cd dist
+      - zip -r ../deploy.zip .
       - cd ..
 
       - echo "ZIP CONTENT"
-      - unzip -l chichicux.zip
+      - unzip -l deploy.zip
 
-      - echo "CHECK NO NESTED ZIP"
-      - unzip -l chichicux.zip | grep -q "function.zip" && echo "ERROR nested zip found" && exit 1 || echo "OK nested zip not found"
-
-      - echo "CHECK APP"
-      - unzip -l chichicux.zip | grep -q " app.py" || exit 1
-
-      - echo "CHECK SUMA"
-      - unzip -l chichicux.zip | grep -q " suma.py" || exit 1
-
-      - echo "DEPLOY"
-      - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://chichicux.zip
+      - echo "Deploy to Lambda"
+      - aws lambda update-function-code --function-name suma-cicd --zip-file fileb://deploy.zip
