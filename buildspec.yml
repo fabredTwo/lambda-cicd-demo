@@ -6,7 +6,7 @@ phases:
       - echo "START BUILD"
       - rm -f deploy.zip || true
 
-      - echo "PACKAGE deploy folder"
+      - echo "PACKAGE deploy folders"
       - cd deploy
       - zip -r ../deploy.zip .
       - cd ..
